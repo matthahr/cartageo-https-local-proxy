@@ -11,7 +11,7 @@ It comes with the following :
   * For proxied services only : entries matching `VIRTUAL_HOST` resolve the nginx-proxy IP address
 
 <p>
-  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-local-proxy/main/architecture.png" alt="Automated HTTPS proxy architecture" width="350px">
+  <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-local-proxy/main/stack.png" alt="Automated HTTPS proxy architecture" width="350px">
 </p>
 
 **Table Of Contents:**
