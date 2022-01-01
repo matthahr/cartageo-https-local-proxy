@@ -1,0 +1,26 @@
+127.0.0.1	localhost
+127.0.1.1	ubuntu
+###
+# 1/ For every container, build a DNS masq based on
+#    <docker-compose service>.<docker-compose project>.docker
+#
+{{ range $index, $container := $ }}
+    {{ with $network := last $container.Networks }}
+{{ $network.IP }}	{{ index $container.Labels "com.docker.compose.service" }}.{{ index $container.Labels "com.docker.compose.project" }}.docker
+    {{ end }}
+{{ end }}
+
+
+###
+# 2/ For containers meant to be proxied by NGINX (have a VIRTUAL_HOST)
+#    we create matching records. their IP will be modified by make script
+#
+# PROXY_BEGIN
+{{ range $index, $container := $ }}
+    {{ with $network := last $container.Networks }}
+        {{ if $container.Env.VIRTUAL_HOST }}
+{{ $network.IP }}       {{ $container.Env.VIRTUAL_HOST }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+# PROXY_END

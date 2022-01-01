@@ -1,0 +1,92 @@
+version: '3'
+
+services:
+  #
+  # nginx based automated proxy
+  nginx-proxy:
+    build: ./proxy
+    container_name: ${COMPOSE_PROJECT_NAME}_entrypoint
+    restart: unless-stopped
+    expose:
+      - "80"
+      - "443"
+    volumes:
+      - ssl-certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy-tier
+      - revproxy_admin
+      - revproxy_apps
+
+  #
+  # mkcert nginx-proxy companion
+  mkcert:
+    build: ./mkcert
+    container_name: ${COMPOSE_PROJECT_NAME}_mkcert
+    restart: unless-stopped
+    volumes:
+      - ssl-certs:/app/certs:rw
+      - ~/.mozilla/firefox:/root/.mozilla/firefox:rw
+      - ~/.pki/nssdb:/root/.pki/nssdb:rw
+      - ${CA_STORE:-/usr/local/share/ca-certificates}:/usr/local/share/ca-certificates
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy-tier
+  
+  #
+  # dnsmasq config for containers
+  dns-gen:
+    build: ./dns-gen
+    container_name: ${COMPOSE_PROJECT_NAME}_dns-gen
+    restart: unless-stopped
+    expose:
+      - "53"
+      - "8080"
+    depends_on:
+      - mkcert
+      - portainer
+      - nginx-proxy
+    logging:
+      options:
+        max-size: "10m"
+    volumes:
+      - config:/etc/
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - revproxy_admin
+
+  # 
+  # Portainer docker admin GUI
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: ${COMPOSE_PROJECT_NAME}_portainer
+    restart: always
+    expose:
+      - "9000"
+    depends_on:
+      - nginx-proxy
+      - mkcert
+    environment:
+      - VIRTUAL_HOST=${PORTAINER_VHOST}
+      - VIRTUAL_PORT=9000
+    networks:
+      - revproxy_admin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    networks:
+      - revproxy_admin
+
+volumes:
+  ssl-certs:
+  portainer-data:
+  config:
+
+networks:
+  proxy-tier:
+  revproxy_admin:
+    external:
+      name: ${ADMIN_NETWORK}
+  revproxy_apps:
+    external: 
+      name: ${APPS_NETWORK}
