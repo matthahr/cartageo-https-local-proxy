@@ -4,23 +4,15 @@ Based on Jason Wilder's Nginx HTTP Proxy (https://github.com/nginx-proxy/nginx-p
 and Aegypius Mkcert for nginx-proxy (https://github.com/aegypius/mkcert-for-nginx-proxy)
 
 It comes with the following :
-* Automation of DNS and Hosts naming + SSL certificates using `docker-gen` templates
-* `mkcert` certificates + CA preconfigured for Mozilla Firefox Web browser
-* `dnsmasq` working server (port 53) and on-demand (`make set-hosts`) system `/etc/hosts` file with the following pattern : 
+* Automation of DNS and Hosts naming + SSL certificates using [docker-gen](https://github.com/nginx-proxy/docker-gen) templates
+* [mkcert](https://github.com/FiloSottile/mkcert) certificates + CA preconfigured for Mozilla Firefox Web browser
+* [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html) working server (port 53) and on-demand (`make set-hosts`) system `/etc/hosts` file with the following pattern : 
   * For every container exposing ports : `docker-compose.service`.`docker-compose.project`.docker record
   * For proxied services only : entries matching `VIRTUAL_HOST` resolve the nginx-proxy IP address
 
 <p>
   <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-local-proxy/main/architecture.png" alt="Automated HTTPS proxy architecture" width="350px">
 </p>
-
-**Software**
-| Library | Desciption | Resources |
-|---|---|---|
-| nginx-proxy | Jwilder's docker-gen based nginx-proxy automated proxy for Docker | https://github.com/nginx-proxy/nginx-proxy |
-| docker-gen | Enables working with containers metadata and automated config | https://github.com/nginx-proxy/docker-gen |
-| mkcert | Enables generation of local trusted SSL certificates | https://github.com/FiloSottile/mkcert |
-| dnsmasq | Very small footprint local DNS server | https://thekelleys.org.uk/dnsmasq/doc.html |
 
 **Table Of Contents:**
   - [Docker environment preparation](#docker-environment-preparation)
