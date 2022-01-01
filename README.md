@@ -3,7 +3,6 @@ Automated nginx-proxy &amp; let's encrypt HTTPS reverse proxy for your dockerize
 Based on Jason Wilder's Nginx HTTP Proxy (https://github.com/nginx-proxy/nginx-proxy) 
 and Aegypius Mkcert for nginx-proxy (https://github.com/aegypius/mkcert-for-nginx-proxy)
 
-It comes with the following :
 * Automation of DNS and Hosts naming + SSL certificates using [docker-gen](https://github.com/nginx-proxy/docker-gen) templates
 * [mkcert](https://github.com/FiloSottile/mkcert) certificates + CA preconfigured for Mozilla Firefox Web browser
 * [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html) working server (port 53) and on-demand (`make set-hosts`) system `/etc/hosts` file with the following pattern : 
