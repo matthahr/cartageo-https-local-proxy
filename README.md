@@ -8,6 +8,7 @@ and Aegypius Mkcert for nginx-proxy (https://github.com/aegypius/mkcert-for-ngin
 * [dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html) working server (port 53) and on-demand (`make set-hosts`) system `/etc/hosts` file with the following pattern : 
   * For every container exposing ports : `docker-compose.service`.`docker-compose.project`.docker record
   * For proxied services only : entries matching `VIRTUAL_HOST` resolve the nginx-proxy IP address
+* Management of all your stacks and containers using [Portainer CE](https://hub.docker.com/r/portainer/portainer-ce)
 
 <p>
   <img src="https://raw.githubusercontent.com/elasticlabs/elabs-https-local-proxy/main/stack.png" alt="Automated HTTPS proxy architecture" width="350px">
