@@ -59,7 +59,9 @@ up: build
 .PHONY: set-hosts
 set-hosts:
 	@bash ./.utils/message.sh info "[INFO] Updating system hosts file (sudo mode)"
-	sudo cp ${DNSMASQ_CONFIG}/hosts.dnsmasq /etc/hosts 
+	sudo cp ${DNSMASQ_CONFIG}/hosts.dnsmasq /etc/hosts
+	@bash ./.utils/message.sh info "[INFO] Restarting the stack"
+	docker-compose restart
 
 .PHONY: hard-cleanup
 hard-cleanup:
