@@ -10,6 +10,7 @@ SHELL         = /bin/bash
 # -> Project variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
 APP_BASEURL?=$(shell cat .env | grep PORTAINER_VHOST | sed 's/.*=//')
+APP_DOMAIN?=$(shell echo ${APP_BASEURL} | sed 's/portainer\.//')
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
 DNSMASQ_CONFIG?=$(shell docker volume inspect --format '{{ .Mountpoint }}' ${PROJECT_NAME}_config)
@@ -40,6 +41,8 @@ build:
 	if [ ! -f /etc/hosts.orig ]; then sudo cp /etc/hosts /etc/hosts.orig; fi
 	grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' /etc/hosts.orig > dns-gen/dnsmasq.hosts.tmpl
 	more dns-gen/dnsmasq.hosts >> dns-gen/dnsmasq.hosts.tmpl
+	@bash ./.utils/message.sh info "[INFO] setting proxy FQDN for proper hosts templating."
+	sed -i "s/changeme/${APP_DOMAIN}/" ./dns-gen/dnsmasq.makefile
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker-compose -f docker-compose.yml build
