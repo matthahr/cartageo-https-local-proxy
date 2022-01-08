@@ -9,10 +9,12 @@ SHELL         = /bin/bash
 #
 # -> Project variables
 PROJECT_NAME?=$(shell cat .env | grep -v ^\# | grep COMPOSE_PROJECT_NAME | sed 's/.*=//')
-APP_BASEURL?=$(shell cat .env | grep PORTAINER_VHOST | sed 's/.*=//')
-APP_DOMAIN?=$(shell echo ${APP_BASEURL} | sed 's/portainer\.//')
+PROXY_DOMAIN?=$(shell echo ${PROJECT_NAME}.docker)
 APPS_NETWORK?=$(shell cat .env | grep -v ^\# | grep APPS_NETWORK | sed 's/.*=//')
 ADMIN_NETWORK?=$(shell cat .env | grep -v ^\# | grep ADMIN_NETWORK | sed 's/.*=//')
+
+# -> App variables
+APP_BASEURL?=$(shell cat .env | grep PORTAINER_VHOST | sed 's/.*=//')
 DNSMASQ_CONFIG?=$(shell docker volume inspect --format '{{ .Mountpoint }}' ${PROJECT_NAME}_config)
 
 # Every command is a PHONY, to avoid file naming confliction -> strengh comes from good habits!
@@ -42,7 +44,7 @@ build:
 	grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' /etc/hosts.orig > dns-gen/dnsmasq.hosts.tmpl
 	more dns-gen/dnsmasq.hosts >> dns-gen/dnsmasq.hosts.tmpl
 	@bash ./.utils/message.sh info "[INFO] setting proxy FQDN for proper hosts templating."
-	sed -i "s/changeme/${APP_DOMAIN}/" ./dns-gen/dnsmasq.makefile
+	sed -i "s/changeme/${PROXY_DOMAIN}/" ./dns-gen/dnsmasq.makefile
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
 	docker-compose -f docker-compose.yml build
