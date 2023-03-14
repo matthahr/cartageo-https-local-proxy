@@ -47,13 +47,13 @@ build:
 	sed -i "s/changeme/${PROXY_DOMAIN}/" ./dns-gen/dnsmasq.makefile
 	# Build the stack
 	@bash ./.utils/message.sh info "[INFO] Building the application"
-	docker-compose -f docker-compose.yml build
+	docker compose -f docker-compose.yml build
 	@bash ./.utils/message.sh info "[INFO] Build OK. Use make up to activate the local HTTPS proxy."
 
 .PHONY: up
 up: build
 	@bash ./.utils/message.sh info "[INFO] Bringing up the HTTPS automated proxy"
-	docker-compose up -d --remove-orphans
+	docker compose up -d --remove-orphans
 	@make urls
 
 .PHONY: set-hosts
@@ -61,12 +61,12 @@ set-hosts:
 	@bash ./.utils/message.sh info "[INFO] Updating system hosts file (sudo mode)"
 	sudo cp ${DNSMASQ_CONFIG}/hosts.dnsmasq /etc/hosts
 	@bash ./.utils/message.sh info "[INFO] Restarting the stack"
-	docker-compose restart
+	docker compose restart
 
 .PHONY: hard-cleanup
 hard-cleanup:
 	@bash ./.utils/message.sh info "[INFO] Bringing done the HTTPS automated proxy"
-	docker-compose -f docker-compose.yml down --remove-orphans
+	docker compose -f docker-compose.yml down --remove-orphans
 	# Delete all hosted persistent data available in volumes
 	@bash ./.utils/message.sh info "[INFO] Cleaning up static volumes"
 	docker volume rm -f $(PROJECT_NAME)_ssl-certs
@@ -87,7 +87,7 @@ urls:
 
 .PHONY: pull
 pull: 
-	docker-compose pull
+	docker compose pull
 
 .PHONY: update
 update: pull up wait
@@ -96,3 +96,5 @@ update: pull up wait
 .PHONY: wait
 wait: 
 	sleep 5
+
+

@@ -8,7 +8,7 @@ SHELL         = /bin/sh
 # Setup variables
 #
 # -> Project variables
-PROXY_DOMAIN=changeme
+PROXY_DOMAIN=local-https-proxy.docker
 PROXY_IP?=$(shell grep -m 1 nginx-proxy.${PROXY_DOMAIN} /etc/hosts.dnsmasq | awk '{print $$1}')
 
 # Every command is a PHONY, to avoid file naming confliction -> strengh comes from good habits!
